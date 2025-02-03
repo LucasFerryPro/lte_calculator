@@ -1,101 +1,142 @@
-import Image from "next/image";
+"use client"
+
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
+const sinrMapping = [
+  { snr: 0, efficiency: 0.67, modulation: 2, codingRate: 0.33 },
+  { snr: 1.5, efficiency: 1.0, modulation: 2, codingRate: 0.5 },
+  { snr: 4.0, efficiency: 1.3, modulation: 2, codingRate: 0.67 },
+  { snr: 5.0, efficiency: 1.5, modulation: 2, codingRate: 0.75 },
+  { snr: 5.5, efficiency: 1.6, modulation: 2, codingRate: 0.8 },
+  { snr: 7.0, efficiency: 2.0, modulation: 4, codingRate: 0.5 },
+  { snr: 10.0, efficiency: 2.67, modulation: 4, codingRate: 0.67 },
+  { snr: 11.5, efficiency: 3.0, modulation: 4, codingRate: 0.75 },
+  { snr: 13.0, efficiency: 3.2, modulation: 4, codingRate: 0.8 },
+  { snr: 15.0, efficiency: 4.0, modulation: 6, codingRate: 0.67 },
+  { snr: 17.0, efficiency: 4.5, modulation: 6, codingRate: 0.75 },
+  { snr: 18.5, efficiency: 4.8, modulation: 6, codingRate: 0.8 },
+  { snr: 20.0, efficiency: 5.33, modulation: 8, codingRate: 0.67 },
+  { snr: 22.0, efficiency: 6.0, modulation: 8, codingRate: 0.75 },
+  { snr: 24.0, efficiency: 6.4, modulation: 8, codingRate: 0.8 },
+  { snr: 27.0, efficiency: 7.0, modulation: 8, codingRate: 0.88 },
+]
+
+const bandwidthOptions = [
+  { bw: 1.4, subcarriers: 72 },
+  { bw: 3, subcarriers: 180 },
+  { bw: 5, subcarriers: 300 },
+  { bw: 10, subcarriers: 600 },
+  { bw: 15, subcarriers: 1000 },
+  { bw: 20, subcarriers: 1200 },
+];
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [bandwidth, setBandwidth] = useState(10);
+  const [subcarriers, setSubcarriers] = useState(600);
+  const [frequency, setFrequency] = useState(1800);
+  const [distance, setDistance] = useState(1);
+  const [txPower, setTxPower] = useState(43);
+  const [cyclicPrefix, setCyclicPrefix] = useState(false);
+  const noiseInterference = -110;
+  const qualityThreshold = -100;
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+  const handleBandwidthChange = (value: any) => {
+    const selected = bandwidthOptions.find((option) => option.bw === Number(value));
+    if (selected) {
+      setBandwidth(selected.bw);
+      setSubcarriers(selected.subcarriers);
+    }
+  };
+
+  const calculateThroughput = () => {
+    const pathLoss = 20 * Math.log10(distance) + 20 * Math.log10(frequency) + 32.45;
+    const receivedPower = txPower - pathLoss;
+    const sinr = receivedPower - noiseInterference;
+
+    if (sinr < qualityThreshold) return 0;
+
+    const closestSinr = sinrMapping.reduce((prev, curr) =>
+      Math.abs(curr.snr - sinr) < Math.abs(prev.snr - sinr) ? curr : prev
+    );
+
+    const modulation = closestSinr.modulation;
+
+    // Définition des symboles OFDM par slot (6 en mode étendu, 7 en mode normal)
+    const symbolsPerSlot = cyclicPrefix ? 6 : 7;
+  
+    // Nombre de slots par seconde (toujours 2000 en LTE)
+    const slotsPerSecond = 2000;
+
+    const codingRate = closestSinr.codingRate;
+  
+    // Calcul du débit total (bps)
+    const dataRate = subcarriers * modulation * symbolsPerSlot * slotsPerSecond;
+
+    const usefulDataRate = dataRate * codingRate;
+
+    return {
+      throughput: (usefulDataRate * 1e-6).toFixed(2), // Conversion en Mbps
+      dataRate: (dataRate * 1e-6).toFixed(2),
+      codingRate: codingRate,
+      subcarriers: subcarriers,
+      modulation: modulation,
+      symbolsPerSlot: symbolsPerSlot,
+      slotsPerSecond: slotsPerSecond,
+      sinr: sinr,
+
+    };
+  };
+
+  const result = calculateThroughput();
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen py-2">
+      <Card className="w-96">
+        <CardContent className="p-4 space-y-4">
+          <CardTitle className="text-lg font-semibold">LTE Throughput Calculator</CardTitle>
+          <div className="space-y-2">
+          <label>Bandwidth (MHz):</label>
+            <RadioGroup value={bandwidth.toString()} onValueChange={handleBandwidthChange}>
+              {bandwidthOptions.map((option) => (
+                <div key={option.bw} className="flex items-center space-x-2">
+                  <RadioGroupItem value={option.bw.toString()} />
+                  <label>{option.bw} MHz</label>
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
+          <div className="space-y-2">
+            <label>Frequency (MHz):</label>
+            <Input type="number" value={frequency} onChange={(e) => setFrequency(Number(e.target.value))} />
+          </div>
+          <div className="flex items-center space-x-2">
+            <label>Extended Cyclic Prefix</label>
+            <Checkbox checked={cyclicPrefix} onCheckedChange={(checked) => setCyclicPrefix(checked === true)} />
+          </div>
+          <div className="space-y-2">
+            <label>Distance (km):</label>
+            <Input type="number" value={distance} onChange={(e) => setDistance(Number(e.target.value))} />
+          </div>
+          <div className="space-y-2">
+            <label>Transmission Power (dBm):</label>
+            <Input type="number" value={txPower} onChange={(e) => setTxPower(Number(e.target.value))} />
+          </div>
+
+          <p className="text-lg font-semibold">Throughput: {result.throughput} Mbps</p>
+          <p>Coding Rate: {result.codingRate}</p>
+          <p>dataRate {result.dataRate} mbps</p>
+          <p>subcarriers {result.subcarriers}</p>
+          <p>modulation {result.modulation}</p>
+          <p>symbolsPerSlot {result.symbolsPerSlot}</p>
+          <p>slotsPerSecond {result.slotsPerSecond}</p>
+          <p>sinr {result.sinr}</p>
+        </CardContent>
+      </Card>
     </div>
   );
 }
