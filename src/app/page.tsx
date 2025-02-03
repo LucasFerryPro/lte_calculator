@@ -58,7 +58,7 @@ export default function Home() {
     const receivedPower = txPower - pathLoss;
     const sinr = receivedPower - noiseInterference;
 
-    if (sinr < qualityThreshold) return 0;
+    if (sinr < qualityThreshold) return null;
 
     const closestSinr = sinrMapping.reduce((prev, curr) =>
       Math.abs(curr.snr - sinr) < Math.abs(prev.snr - sinr) ? curr : prev
@@ -127,14 +127,21 @@ export default function Home() {
             <Input type="number" value={txPower} onChange={(e) => setTxPower(Number(e.target.value))} />
           </div>
 
-          <p className="text-lg font-semibold">Throughput: {result.throughput} Mbps</p>
-          <p>Coding Rate: {result.codingRate}</p>
-          <p>dataRate {result.dataRate} mbps</p>
-          <p>subcarriers {result.subcarriers}</p>
-          <p>modulation {result.modulation}</p>
-          <p>symbolsPerSlot {result.symbolsPerSlot}</p>
-          <p>slotsPerSecond {result.slotsPerSecond}</p>
-          <p>sinr {result.sinr}</p>
+          {result && typeof result === "object" ? (
+            <>
+            <p className="text-lg font-semibold">Throughput: {result.throughput} Mbps</p>
+            <p>Coding Rate: {result.codingRate}</p>
+            <p>Data Rate: {result.dataRate} Mbps</p>
+            <p>Subcarriers: {result.subcarriers}</p>
+            <p>Modulation: {result.modulation}</p>
+            <p>Symbols Per Slot: {result.symbolsPerSlot}</p>
+            <p>Slots Per Second: {result.slotsPerSecond}</p>
+            <p>SINR: {result.sinr}</p>
+            </>
+          ) : (
+            <p className="text-lg font-semibold text-red-500">Invalid SINR - No Throughput</p>
+          )}
+
         </CardContent>
       </Card>
     </div>
